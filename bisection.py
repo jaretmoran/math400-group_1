@@ -62,12 +62,12 @@ def bisection(f, a, b, delta, str_precision="0.6E", return_x_list=False):
         else:         
             b = c; fb = fc        # assign midpoint to b
             
-        print("a = %{0}".format(str_precision) % (a), 
-              " b = %{0}".format(str_precision) % (b), 
-              " midpoint = %{0}".format(str_precision) % (c), 
-              " f(a) = %{0}".format(str_precision) % (fa), 
-              " f(b) = %{0}".format(str_precision) % (fb), 
-              " f(c) = %{0}".format(str_precision) % (fc))
+        print("a = %{0:>10}".format(str_precision) % (a), 
+              " b = %{0:>10}".format(str_precision) % (b), 
+              " c = %{0:>10}".format(str_precision) % (c), 
+              " f(a) = %{0:>10}".format(str_precision) % (fa), 
+              " f(b) = %{0:>10}".format(str_precision) % (fb), 
+              " f(c) = %{0:>10}".format(str_precision) % (fc))
             
         iteration_counter += 1
         if return_x_list:

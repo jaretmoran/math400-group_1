@@ -61,4 +61,7 @@ typings/
 .next
 
 # macOS core
-.DS_storee
+.DS_store
+
+# Python cache
+__pycache__/
