@@ -38,6 +38,21 @@ def center_diff(f, x, h=0.0125):
     """
     return (f(x+h) - f(x-h))/(2*h)
 
+def center_diff_multivariate(function, x, var, h = 0.0125):
+    result = 0
+    
+    if var == 'x':
+        result = (function(x[0] + h, x[1], x[2]) - function(x[0] - h, x[1], x[2])) / (2 * h)
+        
+    elif var == 'y':
+        result = (function(x[0], x[1] + h, x[2]) - function(x[0], x[1] - h, x[2])) / (2 * h)
+        
+    elif var == 'z':
+        result = (function(x[0], x[1], x[2] + h) - function(x[0], x[1], x[2] - h)) / (2 * h)
+        
+    return result
+
+
 def main():
     # Define the function to be differentiated and its derivative
     f = lambda x : np.cos(x); fp = lambda x: -np.sin(x)

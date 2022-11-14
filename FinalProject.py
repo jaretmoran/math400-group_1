@@ -12,7 +12,7 @@ from mpmath import *
 import bisection
 import secant
 import newton
-import center_difference
+import center_difference as cd
 import gaussian_elimination_w_pp as pp
 
 def newtonMethod(f, x0, delta, maxIterations):
@@ -26,7 +26,6 @@ def newtonMethod(f, x0, delta, maxIterations):
 
     iter_counter = 0
     h = 0.0125
-    #h = np.arange(0, h_step*maxIterations + h_step, h_step)
     
     while abs(f(x0)) > delta and iter_counter < maxIterations:
         print(iter_counter + 1, "\t\t\t ", end=" ")
@@ -36,13 +35,12 @@ def newtonMethod(f, x0, delta, maxIterations):
             # Data for graphs
             x.append(x0)
             fx.append(f(x0))
-            m.append(center_difference.center_diff(f, x0, h))
+            m.append(cd.center_diff(f, x0, h))
             
         except:
             raise Exception("Division by zero. f'(x) = 0")
         
         print("%{0:>10} \t\t %{0:>10}".format(precision) % (x0, f(x0)))
-        #print(x0, "\t\t\t", f(x0))
         iter_counter += 1
         
     return x0, iter_counter, x, fx, m
@@ -93,20 +91,6 @@ def newtonBisection(f, a, b, delta, maxIterations, s=0.1):
    
     return x0, iter_counter, method, x, fx, interval
 
-def centerDifference(function, x, var, h = 0.0125):
-    result = 0
-    
-    if var == 'x':
-        result = (function(x[0] + h, x[1], x[2]) - function(x[0] - h, x[1], x[2])) / (2 * h)
-        
-    elif var == 'y':
-        result = (function(x[0], x[1] + h, x[2]) - function(x[0], x[1] - h, x[2])) / (2 * h)
-        
-    elif var == 'z':
-        result = (function(x[0], x[1], x[2] + h) - function(x[0], x[1], x[2] - h)) / (2 * h)
-        
-    return result
-
 def newtonMethod_multivariate(xn, h=0.0125):
     steps = 0
     
@@ -123,9 +107,9 @@ def newtonMethod_multivariate(xn, h=0.0125):
 
 def jacobian(xn, h=0.0125):
     return np.matrix([
-        [centerDifference(f, xn, 'x', h), centerDifference(f, xn, 'y', h), centerDifference(f, xn, 'z', h)],
-        [centerDifference(g, xn, 'x', h), centerDifference(g, xn, 'y', h), centerDifference(g, xn, 'z', h)],
-        [centerDifference(m, xn, 'x', h), centerDifference(m, xn, 'y', h), centerDifference(m, xn, 'z', h)]
+        [cd.center_diff_multivariate(f, xn, 'x', h), cd.center_diff_multivariate(f, xn, 'y', h), cd.center_diff_multivariate(f, xn, 'z', h)],
+        [cd.center_diff_multivariate(g, xn, 'x', h), cd.center_diff_multivariate(g, xn, 'y', h), cd.center_diff_multivariate(g, xn, 'z', h)],
+        [cd.center_diff_multivariate(m, xn, 'x', h), cd.center_diff_multivariate(m, xn, 'y', h), cd.center_diff_multivariate(m, xn, 'z', h)]
     ])
 
 def negativeFArrow(xn):
@@ -146,7 +130,7 @@ def g(x, y, z):
 def m(x, y, z):
     return x + 3 * z - 9
  
-def partA(initial_guess, f_str, tolerance, maxSteps, precision = "0.6E"):
+def partA(f, initial_guess, f_str, tolerance, maxSteps, precision = "0.6E"):
     print("\nInitial guess: ", initial_guess)    
     solution, itera, x, fx, m = newtonMethod(f, initial_guess, tolerance, maxSteps)
     
@@ -163,14 +147,14 @@ def partA(initial_guess, f_str, tolerance, maxSteps, precision = "0.6E"):
     plt.legend(loc='best')
     plt.show()
         
-def partB(f, x0, x1, tolerance, f_str, maxSteps):
+def partB(f, x0, x1, tolerance, f_str, maxSteps=100):
     precision = "0.6E"
     
     solution, no_iterations = secant.secant(f, x0, x1, tolerance, maxSteps)
     print("\nNumber of iterations = ", no_iterations)
     print("An estimate of the root is %{0:>10}".format(precision) % (solution))
     
-def partC(f, x0, xf, tolerance, f_str, maxSteps):
+def partC(f, x0, xf, tolerance, f_str, maxSteps=100):
     precision = "0.6E"
     
     solution, no_iterations = bisection.bisection(f, x0, xf, tolerance, str_precision=precision)
@@ -190,7 +174,7 @@ def partC(f, x0, xf, tolerance, f_str, maxSteps):
     plt.ylim(-1, 1)
     plt.show()
         
-def partD(f, a, b, tolerance, maxSteps):
+def partD(f, a, b, tolerance, maxSteps=100):
     precision = "0.6E"
     solution, iterations, method, x, fx, intervals = newtonBisection(f, a, b, tolerance, maxSteps)
 
@@ -222,26 +206,25 @@ def main():
     ####### Problem 1
     ########################################################################
     tolerance = 1e-6
-    precision = "0.6E"
     f_str = "tanh(x)"
     
     # Part a.1; Initial Guess: 1.08
-    #partA(1.08, f_str, tolerance, 20)
+    #partA(f_pm1, 1.08, f_str, tolerance, 20)
     
     # Part a.2; initial Guess: 1.09
-    #partA(1.09, f_str, tolerance, 20)
+    #partA(f_pm1, 1.09, f_str, tolerance, 20)
     
     # Part b.1
-    #partB(f_pm1, 1.08, 1.09, tolerance, 20)
+    #partB(f_pm1, 1.08, 1.09, tolerance, f_str, 20)
     
     # Part b.2
-    #partB(f_pm1, 1.09, 1.10, tolerance, 20)
+    #partB(f_pm1, 1.09, 1.10, tolerance, f_str, 20)
     
     # Part b.3
-    #partB(f_pm1, 1, 2.3, tolerance, 20)
+    #partB(f_pm1, 1, 2.3, tolerance, f_str, 20)
     
     # Part b.4
-    #partB(f_pm1, 1, 2.4, tolerance, 20)
+    #partB(f_pm1, 1, 2.4, tolerance, f_str, 20)
     
     # Part c
     #partC(f_pm1, -5, 3, tolerance, f_str, 20)
