@@ -6,6 +6,7 @@ Created on Sat Oct 29 09:37:38 2022
 """
 import sys
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from mpmath import *
 import bisection
@@ -222,25 +223,7 @@ def pm2(x0, h=0.0125):
     print("mx = ", m(x[0], x[1], x[2]))
 
 
-def simpson(f, a, b, n):
-    h = float(b - a) / n
-    k = 0.0
-    x = a + h
-    for i in np.arange(1, n / 2 + 1):
-        k += 4 * f(x)
-        x += 2 * h
-
-    x = a + 2 * h
-    for i in np.arange(1, n / 2):
-        k += 2 * f(x)
-        x += 2 * h
-    return (h / 3) * (f(a) + f(b) + k)
-
-
 def section4():
-    # Import statements
-    import pandas as pd
-    import matplotlib.pyplot as plt
 
     # Grab only the data we want - skip the headers and intro
     df = pd.read_csv('hoover_dam_data_past_year.csv', header=None, parse_dates=[0], skiprows=29)
@@ -297,19 +280,18 @@ def section4():
 
 
 def simpson(f, a, b, n):
-        h = float(b-a)/n
-        k = 0.0
-        x = a + h
-        for i in np.arange(1, n/2 + 1):
-            k += 4*f(x)
-            x += 2*h
+    h = float(b - a) / n
+    k = 0.0
+    x = a + h
+    for i in np.arange(1, n / 2 + 1):
+        k += 4 * f(x)
+        x += 2 * h
 
-        x = a + 2*h
-        for i in np.arange(1, n/2):
-            k += 2*f(x)
-            x += 2*h
-        return (h/3)*(f(a)+f(b)+k)
-
+    x = a + 2 * h
+    for i in np.arange(1, n / 2):
+        k += 2 * f(x)
+        x += 2 * h
+    return (h / 3) * (f(a) + f(b) + k)
     
 def main():
     ########################################################################
@@ -347,10 +329,10 @@ def main():
     ########################################################################
     ####### Section 2
     ########################################################################
-    """
+    '''
     x0 = np.array([2, 0, 2])
     pm2(x0)
-    """
+    '''
 
     #######################################################################
     ####### Problem 3
@@ -389,7 +371,7 @@ def main():
 
 
     for n in nvalues:
-        errsimp = abs(exact[0] - simpson(f1,a,b,n))
+        errsimp = abs(exact1[0] - simpson(f1,a,b,n))
         print(f"# of intervals={n}, Exact value: {exact1[0]}, Simpson's approximation = {simpson(f1,a,b,n)}, Simpson's error  = {errsimp}")
 
     print("\n")
@@ -404,9 +386,9 @@ def main():
     #######################################################################
     ####### Problem 4
     #######################################################################
-    """
-    section4()
-    """
+    
+    #section4()
+    
     
     return 0
 
