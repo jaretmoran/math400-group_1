@@ -16,7 +16,6 @@ import gaussian_elimination_w_pp as pp
 from scipy.integrate import quad
 import pandas as pd
 
-from scipy.integrate import quad
 
 def newtonMethod(f, x0, delta, maxIterations):
     precision = "0.6E"
@@ -354,48 +353,6 @@ def main():
     """
 
     #######################################################################
-    ####### Section 3
-    #######################################################################
-    # first test case
-    """
-    f = lambda x: x**3+x**2+x
-    F = lambda x: x**3+x**2+x
-    #second test case
-    f1 = lambda x: x**3
-    F1 = lambda x: x**3
-    #third test case
-    f2 = lambda x: 2*x**3+10*x**2
-    F2 = lambda x: 2*x**3+10*x**2
-    #intervals
-    a, b = 0.0, 2
-    #exact solutions for each equation 
-    exact = quad(F, a, b)
-    exact1 = quad(F1, a, b)
-    exact2 = quad(F2, a, b)
-    #printing exact value, simpsons approximation and error
-    nvalues = [2**i for i in range(1,5)]
-    for n in nvalues:
-        errsimp = abs(exact[0] - simpson(f,a,b,n)) 
-        print(f"# of intervals={n}, Exact value: {exact[0]}, Simpson's approximation = {simpson(f,a,b,n)}, Simpson's error  = {errsimp}")
-    print("\n")
-    for n in nvalues:
-        errsimp = abs(exact[0] - simpson(f1,a,b,n))
-        print(f"# of intervals={n}, Exact value: {exact1[0]}, Simpson's approximation = {simpson(f1,a,b,n)}, Simpson's error  = {errsimp}")
-    print("\n")
-    for n in nvalues:
-        errsimp = abs(exact2[0] - simpson(f2,a,b,n))
-        print(f"# of intervals={n}, Exact value: {exact2[0]}, Simpson's approximation = {simpson(f2,a,b,n)}, Simpson's error  = {errsimp}")
-    print("\n")
-    """
-
-    #######################################################################
-    ####### Problem 4
-    #######################################################################
-    """
-    section4()
-    """
-
-    #######################################################################
     ####### Problem 3
     #######################################################################
     #first test case
@@ -443,13 +400,13 @@ def main():
 
     print("\n")
     '''
+
     #######################################################################
     ####### Problem 4
     #######################################################################
-    
-
-    
-    
+    """
+    section4()
+    """
     
     return 0
 
