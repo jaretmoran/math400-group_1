@@ -16,7 +16,7 @@ import center_difference as cd
 import gaussian_elimination_w_pp as pp
 from scipy.integrate import quad
 from scipy.integrate import simpson
-#import scipy as sp
+# import scipy as sp
 import pandas as pd
 
 
@@ -240,13 +240,11 @@ def pm2(x0, h=0.0125):
 
 
 def section4():
-
     # Grab only the data we want - skip the headers and intro
     df = pd.read_csv('hoover_dam_data_past_year.csv', header=None, parse_dates=[0], skiprows=29)
-    # print(df.to_string())
+    # print(df.to_string())  # DEBUG
 
     date_flow = ''
-
     # Go through parsed data
     for line in range(len(df)):
         # Capture date and flow only
@@ -270,10 +268,8 @@ def section4():
 
     # Read txt file and assign column names
     columns = ['Date', 'Discharge (cf/s)']
-
     df = pd.read_csv(file_name, header=None, names=columns, parse_dates=[0])
     df = df.reset_index()
-    #print(df)
 
     # Plot data
     ts = df['Discharge (cf/s)'].plot(figsize=(14, 5), title='Hoover Damn', xlabel="Time (s)", ylabel="Discharge (cf/s)",
@@ -281,33 +277,26 @@ def section4():
     ts.plot()
     plt.show()
 
-    # Calculate total discharge rate in seconds
-    per_second = df.sum(numeric_only=True)[0]
-
+    # Calculate total discharge
     water_data = []
     for index, row in df.iterrows():
-        #print("Cf/s value is: ", df.loc[0][1])
-        water_data.append(row['Discharge (cf/s)'] * 24 * 60 * 60)
-     
+        # print("Cf/s value is: ", df.loc[0][1])  # DEBUG
+        # Convert sec --> min --> hour --> day
+        water_data.append(row['Discharge (cf/s)'] * 60 * 60 * 24)
+
+    # Set up params for Simpson's rule
     n = 304
     x = np.linspace(1, 305, 305, 305)
+    # Using built-in scipy library Simpson's function
     result = simpson(water_data, x)
     actual = sum(water_data)
-    print(result)
-    print(actual)
-    
-    #print(len(water_data))
+    # print(result)
+    # print(actual)
+    # print(len(water_data))  # DEBUG
 
-    """
-    # Calculate total discharge rate in years - Convert cubic ft/sec --> cubic ft/yr
-    # Conversion Rate: 60 secs/min -> 60 mins/hr -> 24 hrs/day -> 365 days/yr
-    per_year = per_second * 60 * 60 * 24 * 365
-
-    print(f"\nThe Hoover Dam has discharged {per_year} cubic feet of water in the past "
-          f"calendar year.")
-    """
-    print(f"\nThe Hoover Dam has discharged {result} cubic feet of water in the past "
-          f"calendar year.")
+    print(f"\nThe Hoover Dam has discharged {result} cubic feet of water in the past calendar year.")
+    print(f"There is an error/difference of {actual - result} cubic feet when calculating the total amount of water"
+          f" via the actual sum of the data versus the result using Simpson's Method.")
 
 '''
 def simpson(f, a, b, n):
@@ -325,6 +314,8 @@ def simpson(f, a, b, n):
     return (h / 3) * (f(a) + f(b) + k)
  ''' 
 
+
+# NOT USED: our own Simpson's function that takes in the dataset as a parameter
 def simpsons_with_data(data, a, b, n):
     h = float(b - a) / n
     print("h = ", h)
