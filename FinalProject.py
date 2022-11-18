@@ -340,7 +340,7 @@ def main():
     #partA(f_pm1, 1.08, f_str, tolerance, 20)
 
     # Part a.2; initial Guess: 1.09
-    partA(f_pm1, 1.09, f_str, tolerance, 20)
+    #partA(f_pm1, 1.09, f_str, tolerance, 20)
 
     # Part b.1
     #partB(f_pm1, 1.08, 1.09, tolerance, f_str, 20)
