@@ -193,20 +193,6 @@ def partA(f, initial_guess, f_str, tolerance, maxSteps, precision="0.6E"):
     fig.suptitle("Root Approximation using Newton's Method")
     fig.tight_layout()
     plt.show()
-    '''
-    for i in range(0, len(x)):
-        tangentLine = [m[i] * (n - x[i]) + fx[i] for n in x_vals]
-        plt.plot(x_vals, tangentLine, '--', label='iteration: {0}'.format(i + 1))
-        
-
-    plt.title("Root Approximation of " + f_str + ",\n with initial guess x = {0}".format(initial_guess))
-    plt.plot(np.zeros(len(x_vals)), np.linspace(-5, 5), '--', c="lightgray")
-    plt.plot(x_vals, np.zeros(len(x_vals)), '--', c='lightgray')
-    plt.plot(x_vals, np.tanh(x_vals))
-    plt.ylim(-1, 1)
-    plt.legend(loc='best')
-    plt.show()
-    '''
 
 def partB(f, x0, x1, tolerance, f_str, maxSteps=100):
     precision = "0.6E"
@@ -222,20 +208,6 @@ def partC(f, x0, xf, tolerance, f_str, maxSteps=100):
     solution, no_iterations = bisection.bisection(f, x0, xf, tolerance, str_precision=precision)
     print("\nNumber of iterations = ", no_iterations)
     print("An estimate of the root is %{0:>10}".format(precision) % (solution))
-
-    # Plot graph.
-    x = np.linspace(0, 5, 50)
-
-    plt.title("Graph of f(x) = " + f_str)
-    plt.ylabel("f(x)")
-    plt.xlabel("x")
-    plt.grid()
-    plt.plot(x, f(x))  # plot f(x)
-    plt.plot(x, np.zeros(len(x)), '--', c="gray")  # plot x-axis
-    plt.xlim(-5, 5)
-    plt.ylim(-5, 5)
-    plt.show()
-
 
 def partD(f, a, b, tolerance, maxSteps=100):
     precision = "0.6E"
