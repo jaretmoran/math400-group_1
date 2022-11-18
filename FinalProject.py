@@ -160,21 +160,36 @@ def partA(f, initial_guess, f_str, tolerance, maxSteps, precision="0.6E"):
     
     fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=figSize)
     
-    x_vals = np.linspace(-10, 10)
+    x_vals = y_vals = np.linspace(-10, 10)
     tangent_index = 0
     for i in range(0, nrows):
         for j in range(0, ncols):
             if tangent_index < iterations:
+                
+                # Compute tangent line
                 tangentLine = [m[tangent_index] * (n - x[tangent_index]) + fx[tangent_index] for n in x_vals]
-                axs[i][j].plot(x_vals, tangentLine, '--', label='tangent line; iteration: {0}'.format(tangent_index + 1))
+                
+                # Plot function and tangent line on subplot
+                axs[i][j].plot(x_vals, tangentLine, '--', label='tangent line')
                 axs[i][j].plot(x_vals, np.tanh(x_vals), label='f(x) = tanh(x)')
+                
+                # Subplot settings
                 axs[i][j].set_xlim(-3,3)
                 axs[i][j].set_ylim(-1,1)
+                axs[i][j].set_title("Iteration: {0}; x={1}".format(tangent_index + 1, x[tangent_index]))
                 axs[i][j].legend(loc="best")
-                tangent_index += 1
                 
-                pass
-        
+                # plot x-axis on subplot
+                axs[i][j].plot(x_vals, np.zeros(len(x_vals)), '--', color='lightgray')
+                axs[i][j].text(2.85, -.25, 'x')
+                
+                # plot y-axis on subplot
+                axs[i][j].plot(np.zeros(len(y_vals)), y_vals, '--', color='lightgray')
+                axs[i][j].text(-0.15, 0.75, 'y')
+                
+            tangent_index += 1
+
+    # Super plot Settings (main plot)
     fig.suptitle("Root Approximation using Newton's Method")
     fig.tight_layout()
     plt.show()
@@ -337,7 +352,7 @@ def main():
     f_str = "tanh(x)"
 
     # Part a.1; Initial Guess: 1.08
-    #partA(f_pm1, 1.08, f_str, tolerance, 20)
+    partA(f_pm1, 1.08, f_str, tolerance, 20)
 
     # Part a.2; initial Guess: 1.09
     #partA(f_pm1, 1.09, f_str, tolerance, 20)
