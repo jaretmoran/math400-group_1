@@ -15,6 +15,8 @@ import newton
 import center_difference as cd
 import gaussian_elimination_w_pp as pp
 from scipy.integrate import quad
+from scipy.integrate import simpson
+#import scipy as sp
 import pandas as pd
 
 
@@ -154,10 +156,10 @@ def partA(f, initial_guess, f_str, tolerance, maxSteps, precision="0.6E"):
     print("\nInitial guess: ", initial_guess)
     solution, iterations, x, fx, m = newtonMethod(f, initial_guess, tolerance, maxSteps)
 
-    figSize = (15, 13)
+    # Setup figure and number of subplots
     nrows = int(math.ceil(iterations/2))
     ncols = 2
-    
+    figSize = (15, 13)    
     fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=figSize)
     
     x_vals = y_vals = np.linspace(-10, 10)
@@ -286,8 +288,15 @@ def section4():
     for index, row in df.iterrows():
         #print("Cf/s value is: ", df.loc[0][1])
         water_data.append(row['Discharge (cf/s)'] * 24 * 60 * 60)
-        
-    print(water_data)
+     
+    n = 304
+    x = np.linspace(1, 305, 305, 305)
+    result = simpson(water_data, x)
+    actual = sum(water_data)
+    print(result)
+    print(actual)
+    
+    #print(len(water_data))
 
     """
     # Calculate total discharge rate in years - Convert cubic ft/sec --> cubic ft/yr
@@ -297,10 +306,10 @@ def section4():
     print(f"\nThe Hoover Dam has discharged {per_year} cubic feet of water in the past "
           f"calendar year.")
     """
-    print(f"\nThe Hoover Dam has discharged {per_second} cubic feet of water per second in the past "
+    print(f"\nThe Hoover Dam has discharged {result} cubic feet of water in the past "
           f"calendar year.")
 
-
+'''
 def simpson(f, a, b, n):
     h = float(b - a) / n
     k = 0.0
@@ -314,7 +323,27 @@ def simpson(f, a, b, n):
         k += 2 * f(x)
         x += 2 * h
     return (h / 3) * (f(a) + f(b) + k)
+ ''' 
+
+def simpsons_with_data(data, a, b, n):
+    h = float(b - a) / n
+    print("h = ", h)
+    accumulator = 0
     
+    print(data[0])
+    for i in range(1, len(data) - 1):
+        if i % 2 == 0:
+            print(data[i])
+            accumulator += 2 * data[i]
+        else:
+            print(data[i])
+            accumulator += 4 * data[i]
+    
+    print( data[len(data) - 1] )
+    return (h / 3) * ( data[0] + accumulator + data[len(data) - 1] )
+    
+    pass
+
 def main():
     ########################################################################
     ####### Section 1
@@ -324,7 +353,7 @@ def main():
     f_str = "tanh(x)"
 
     # Part a.1; Initial Guess: 1.08
-    partA(f_pm1, 1.08, f_str, tolerance, 20)
+    #partA(f_pm1, 1.08, f_str, tolerance, 20)
 
     # Part a.2; initial Guess: 1.09
     #partA(f_pm1, 1.09, f_str, tolerance, 20)
@@ -408,8 +437,13 @@ def main():
     #######################################################################
     ####### Problem 4
     #######################################################################
-    
-    #section4()
+    #data = [34, 32, 29, 33, 37, 40, 41, 36, 38, 39]
+    #x = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+    #test = simpsons_with_data(data, 0, 90, 10)
+    #sp = simpson(data, x)
+    #print("Simpson's approx: ", test)
+    #print("Scipy: ", sp)
+    section4()
     
     
     return 0
