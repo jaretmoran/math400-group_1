@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from mpmath import *
+import mpmath as math
 import bisection
 import secant
 import newton
@@ -34,7 +34,8 @@ def newtonMethod(f, x0, delta, maxIterations):
         print(iter_counter + 1, "\t\t\t ", end=" ")
         try:
             x0 = newton.newtonStep(f, x0, h)
-
+            
+            
             # Data for graphs
             x.append(x0)
             fx.append(f(x0))
@@ -123,7 +124,10 @@ def jacobian(xn, h=0.0125):
          cd.center_diff_multivariate(m, xn, 'z', h)]
     ])
 
-
+'''
+def jacobian(xn):
+    return np.matrix([ [2*xn[0], 2*xn[1], 2*xn[2] ], [ 2*xn[0], 0, 2*xn[2] ], [ 2*xn[0], 2*xn[1], -4] ])
+'''
 def negativeFArrow(xn):
     return np.matrix([[-f(xn[0], xn[1], xn[2])], [-g(xn[0], xn[1], xn[2])], [-m(xn[0], xn[1], xn[2])]])
 
@@ -137,25 +141,48 @@ def f_pm1(x):
 
 
 def f(x, y, z):
-    return x ** 2 + y ** 2 + z ** 2 - 10
-
+    return x**2 + y**2 + z**2 -1 
 
 def g(x, y, z):
-    return x + 2 * y - 2
-
+    return x**2 + z**2 - 0.25
 
 def m(x, y, z):
-    return x + 3 * z - 9
+    return x**2 + y**2 - 4*z
 
 
 def partA(f, initial_guess, f_str, tolerance, maxSteps, precision="0.6E"):
     print("\nInitial guess: ", initial_guess)
-    solution, itera, x, fx, m = newtonMethod(f, initial_guess, tolerance, maxSteps)
+    solution, iterations, x, fx, m = newtonMethod(f, initial_guess, tolerance, maxSteps)
 
+    figSize = (15, 13)
+    nrows = int(math.ceil(iterations/2))
+    ncols = 2
+    
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=figSize)
+    
     x_vals = np.linspace(-10, 10)
+    tangent_index = 0
+    for i in range(0, nrows):
+        for j in range(0, ncols):
+            if tangent_index < iterations:
+                tangentLine = [m[tangent_index] * (n - x[tangent_index]) + fx[tangent_index] for n in x_vals]
+                axs[i][j].plot(x_vals, tangentLine, '--', label='tangent line; iteration: {0}'.format(tangent_index + 1))
+                axs[i][j].plot(x_vals, np.tanh(x_vals), label='f(x) = tanh(x)')
+                axs[i][j].set_xlim(-3,3)
+                axs[i][j].set_ylim(-1,1)
+                axs[i][j].legend(loc="best")
+                tangent_index += 1
+                
+                pass
+        
+    fig.suptitle("Root Approximation using Newton's Method")
+    fig.tight_layout()
+    plt.show()
+    '''
     for i in range(0, len(x)):
-        abline_values = [m[i] * (n - x[i]) + fx[i] for n in x_vals]
-        plt.plot(x_vals, abline_values, '--', label='iteration: {0}'.format(i + 1))
+        tangentLine = [m[i] * (n - x[i]) + fx[i] for n in x_vals]
+        plt.plot(x_vals, tangentLine, '--', label='iteration: {0}'.format(i + 1))
+        
 
     plt.title("Root Approximation of " + f_str + ",\n with initial guess x = {0}".format(initial_guess))
     plt.plot(np.zeros(len(x_vals)), np.linspace(-5, 5), '--', c="lightgray")
@@ -164,7 +191,7 @@ def partA(f, initial_guess, f_str, tolerance, maxSteps, precision="0.6E"):
     plt.ylim(-1, 1)
     plt.legend(loc='best')
     plt.show()
-
+    '''
 
 def partB(f, x0, x1, tolerance, f_str, maxSteps=100):
     precision = "0.6E"
@@ -190,8 +217,8 @@ def partC(f, x0, xf, tolerance, f_str, maxSteps=100):
     plt.grid()
     plt.plot(x, f(x))  # plot f(x)
     plt.plot(x, np.zeros(len(x)), '--', c="gray")  # plot x-axis
-    plt.xlim(-1, 1)
-    plt.ylim(-1, 1)
+    plt.xlim(-5, 5)
+    plt.ylim(-5, 5)
     plt.show()
 
 
@@ -256,16 +283,24 @@ def section4():
     columns = ['Date', 'Discharge (cf/s)']
 
     df = pd.read_csv(file_name, header=None, names=columns, parse_dates=[0])
-    print(df)
+    df = df.reset_index()
+    #print(df)
 
     # Plot data
-    ts = df['Discharge (cf/s)'].plot(figsize=(14, 5), title='Hoover Damn', xlabel="Time", ylabel="Discharge (cf/s)",
+    ts = df['Discharge (cf/s)'].plot(figsize=(14, 5), title='Hoover Damn', xlabel="Time (s)", ylabel="Discharge (cf/s)",
                                      legend=True)
     ts.plot()
     plt.show()
 
     # Calculate total discharge rate in seconds
     per_second = df.sum(numeric_only=True)[0]
+
+    water_data = []
+    for index, row in df.iterrows():
+        #print("Cf/s value is: ", df.loc[0][1])
+        water_data.append(row['Discharge (cf/s)'] * 24 * 60 * 60)
+        
+    print(water_data)
 
     """
     # Calculate total discharge rate in years - Convert cubic ft/sec --> cubic ft/yr
@@ -297,40 +332,40 @@ def main():
     ########################################################################
     ####### Section 1
     ########################################################################
-    """
+
     tolerance = 1e-6
     f_str = "tanh(x)"
 
     # Part a.1; Initial Guess: 1.08
-    partA(f_pm1, 1.08, f_str, tolerance, 20)
+    #partA(f_pm1, 1.08, f_str, tolerance, 20)
 
     # Part a.2; initial Guess: 1.09
     partA(f_pm1, 1.09, f_str, tolerance, 20)
 
     # Part b.1
-    partB(f_pm1, 1.08, 1.09, tolerance, f_str, 20)
+    #partB(f_pm1, 1.08, 1.09, tolerance, f_str, 20)
 
     # Part b.2
-    partB(f_pm1, 1.09, 1.10, tolerance, f_str, 20)
+    #partB(f_pm1, 1.09, 1.10, tolerance, f_str, 20)
 
     # Part b.3
-    partB(f_pm1, 1, 2.3, tolerance, f_str, 20)
+    #partB(f_pm1, 1, 2.3, tolerance, f_str, 20)
 
     # Part b.4
-    partB(f_pm1, 1, 2.4, tolerance, f_str, 20)
+    #partB(f_pm1, 1, 2.4, tolerance, f_str, 20)
 
     # Part c
-    partC(f_pm1, -5, 3, tolerance, f_str, 20)
+    #partC(f_pm1, -5, 3, tolerance, f_str, 20)
 
     # Part d
-    partD(f_pm1, -10, 5, tolerance, 20)
-    """
+    #partD(f_pm1, -10, 5, tolerance, 20)
+    
 
     ########################################################################
     ####### Section 2
     ########################################################################
     '''
-    x0 = np.array([2, 0, 2])
+    x0 = np.array([1, 1, 1])
     pm2(x0)
     '''
 
