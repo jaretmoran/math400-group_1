@@ -291,7 +291,7 @@ def section4():
      
     n = 304
     x = np.linspace(1, 305, 305, 305)
-    result = simpson(water_data, x)
+    result = simpsons_with_data(water_data, x)
     actual = sum(water_data)
     print(result)
     print(actual)
@@ -325,24 +325,25 @@ def simpson(f, a, b, n):
     return (h / 3) * (f(a) + f(b) + k)
  ''' 
 
-def simpsons_with_data(data, a, b, n):
+def simpsons_with_data(data, x):
+    num_intervals = len(data) - 1
+    if num_intervals % 2 == 0:
+        n = num_intervals
+    else: 
+        n = num_intervals - 1
+    
+    a = x[0]
+    b = x[n]
     h = float(b - a) / n
-    print("h = ", h)
     accumulator = 0
     
-    print(data[0])
-    for i in range(1, len(data) - 1):
+    for i in range(1, n):
         if i % 2 == 0:
-            print(data[i])
             accumulator += 2 * data[i]
         else:
-            print(data[i])
             accumulator += 4 * data[i]
     
-    print( data[len(data) - 1] )
-    return (h / 3) * ( data[0] + accumulator + data[len(data) - 1] )
-    
-    pass
+    return (h / 3) * ( data[0] + accumulator + data[n] )
 
 def main():
     ########################################################################
